@@ -46,7 +46,7 @@ class CorrelationView(APIView):
                     coins_correlations[coin] = coin_correlation
             result[day] = coins_correlations
 
-        response = {"request": result}
+        response = {"correlations": result}
 
         return Response(response, status=status.HTTP_200_OK)
 
