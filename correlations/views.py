@@ -32,10 +32,10 @@ class CorrelationView(APIView):
         # data_by_dates = [CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data for day in days]
         result = {}
         for day in days:
-            try:
-                data_by_day = CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data
-            except:
-                return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
+            # try:
+            data_by_day = CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data
+            # except:
+            #     return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
             coins_correlations = {}
             for coin in coins:
                 coin_correlation = {}
