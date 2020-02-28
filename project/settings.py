@@ -26,7 +26,7 @@ SECRET_KEY = '0jqbb%hii=u8cy1-noc5k#zh(*gul+j1po16t^2%b3!@l!&l)p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-18-219-16-122.us-east-2.compute.amazonaws.com']
+ALLOWED_HOSTS = ['*']
 
 mongoengine.connect(
     db="history",
