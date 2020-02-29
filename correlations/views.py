@@ -39,7 +39,10 @@ class CorrelationView(APIView):
                 for other_coin in coins:
                     if other_coin == coin:
                         continue
-                    coin_correlation[other_coin] = data_by_day["data"][coin]["close"]/data_by_day["data"][other_coin]["close"]
+                    try:
+                        coin_correlation[other_coin] = data_by_day["data"][coin]["close"]/data_by_day["data"][other_coin]["close"]
+                    except:
+                        return Response({"message": "can not retrieve data for this coins"}, status=status.HTTP_400_BAD_REQUEST)
                     coins_correlations[coin] = coin_correlation
             result[day] = coins_correlations
 
