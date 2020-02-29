@@ -15,7 +15,6 @@ from scipy.stats import pearsonr
 class CorrelationView(APIView):
 
     def get(self, request):
-        return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
         try:
             coins = json.loads(request.GET["coins"]).lower()
             coins = re.findall(r'\w+', coins)
@@ -38,6 +37,7 @@ class CorrelationView(APIView):
             for coin in coins:
                 data_by_coins[coin].append(data_by_day[coin]["close"])
         # except:
+        return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
         coins_correlations = {}
         for coin in coins:
             coin_correlation = {}
