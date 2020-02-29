@@ -37,14 +37,16 @@ class CorrelationView(APIView):
         except:
             return Response({"message": "can not retrieve data"}, status=status.HTTP_400_BAD_REQUEST)
         coins_correlations = {}
-        for coin in coins:
+        for coin_i in range(len(coins)):
             coin_correlation = {}
-            for other_coin in coins:
-                if other_coin == coin:
-                    continue
-                coin_correlation[other_coin] = pearsonr(data_by_coins[coin], data_by_coins[other_coin])[0]
-            coins_correlations[coin] = coin_correlation
-
+            for other_coin_i in range(coin_i + 1, len(coins)):
+                coin_correlation[coins[other_coin_i]] = pearsonr(data_by_coins[coins[coin_i]],
+                                                                 data_by_coins[coins[other_coin_i]])[0]
+            coins_correlations[coins[coin_i]] = coin_correlation
+        for coin_i in range(1, len(coins)):
+            for other_coin_i in range(0, coin_i):
+                coins_correlations[coins[coin_i]][coins[other_coin_i]] =\
+                    coins_correlations[coins[other_coin_i]][coins[coin_i]]
         response = {"correlation": coins_correlations}
 
         return Response(response, status=status.HTTP_200_OK)
