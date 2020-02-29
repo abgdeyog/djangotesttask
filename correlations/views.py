@@ -28,9 +28,6 @@ class CorrelationView(APIView):
         days = []
         for i in range(delta.days + 1):
             days.append(calendar.timegm((date_from + timedelta(days=i)).timetuple()))
-        result = {}
-        # try:
-        # data_by_dates = [CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data for day in days]
         data_by_coins = {coin: [] for coin in coins}
         try:
             for day in days:
@@ -39,7 +36,6 @@ class CorrelationView(APIView):
                     data_by_coins[coin].append(data_by_day[coin]["close"])
         except:
             return Response({"message": "can not retrieve data"}, status=status.HTTP_400_BAD_REQUEST)
-        # except:
         coins_correlations = {}
         for coin in coins:
             coin_correlation = {}
