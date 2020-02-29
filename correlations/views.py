@@ -49,6 +49,6 @@ class CorrelationView(APIView):
                 coin_correlation[other_coin] = pearsonr(data_by_coins[coin], data_by_coins[other_coin])[0]
             coins_correlations[coin] = coin_correlation
 
-        response = {"correlations": coins_correlations}
+        response = {"correlation": coins_correlations}
 
         return Response(response, status=status.HTTP_200_OK)
