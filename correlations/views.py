@@ -10,6 +10,7 @@ import re
 from datetime import datetime, date, timedelta
 import time
 import calendar
+from scipy.stats import pearsonr
 
 class CorrelationView(APIView):
 
@@ -28,24 +29,24 @@ class CorrelationView(APIView):
         for i in range(delta.days + 1):
             days.append(calendar.timegm((date_from + timedelta(days=i)).timetuple()))
         result = {}
+        # try:
+        # data_by_dates = [CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data for day in days]
+        data_by_coins = {coin: [] for coin in coins}
         for day in days:
-            try:
-                data_by_day = CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data
-            except:
-                 return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
-            coins_correlations = {}
+            data_by_day = CurrencyDataSerializer(CurrencyData.objects.get(timestamp=day)).data["data"]
             for coin in coins:
-                coin_correlation = {}
-                for other_coin in coins:
-                    if other_coin == coin:
-                        continue
-                    try:
-                        coin_correlation[other_coin] = data_by_day["data"][coin]["close"]/data_by_day["data"][other_coin]["close"]
-                    except:
-                        return Response({"message": "can not retrieve data for this coins"}, status=status.HTTP_400_BAD_REQUEST)
-                    coins_correlations[coin] = coin_correlation
-            result[day] = coins_correlations
+                data_by_coins[coin].append(data_by_day[coin]["close"])
+        # except:
+        #     return Response({"message": "can not retrieve the results"}, status=status.HTTP_400_BAD_REQUEST)
+        coins_correlations = {}
+        for coin in coins:
+            coin_correlation = {}
+            for other_coin in coins:
+                if other_coin == coin:
+                    continue
+                coin_correlation[other_coin] = pearsonr(data_by_coins[coin], data_by_coins[other_coin])[0]
+            coins_correlations[coin] = coin_correlation
 
-        response = {"correlations": result}
+        response = {"correlations": coins_correlations}
 
         return Response(response, status=status.HTTP_200_OK)
